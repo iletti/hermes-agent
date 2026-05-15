@@ -19,6 +19,6 @@ dockerfilePath = "Dockerfile"
 [deploy]
 # Run the gateway as the foreground process.
 # Set HERMES_DASHBOARD=1 to also expose the web UI on Railway's PORT.
-startCommand = "gateway run"
+startCommand = "/usr/bin/tini -g -- /opt/hermes/docker/entrypoint.sh gateway run"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
