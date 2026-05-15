@@ -1,0 +1,24 @@
+# Railway deployment configuration for Hermes Agent
+# https://docs.railway.app/reference/config-as-code
+#
+# Required environment variables (set in Railway dashboard):
+#   OPENAI_API_KEY        — or ANTHROPIC_API_KEY / other provider key
+#
+# Optional — enable the web dashboard alongside the gateway:
+#   HERMES_DASHBOARD=1              — start web UI in background
+#   HERMES_DASHBOARD_HOST=0.0.0.0  — bind dashboard to all interfaces
+#   PORT is injected automatically by Railway
+#
+# To deploy just the dashboard (no gateway):
+#   Override startCommand to: dashboard --host 0.0.0.0 --no-open --insecure
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# Run the gateway as the foreground process.
+# Set HERMES_DASHBOARD=1 to also expose the web UI on Railway's PORT.
+startCommand = "gateway run"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
