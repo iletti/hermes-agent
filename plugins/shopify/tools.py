@@ -18,6 +18,14 @@ def _check_shopify_available() -> bool:
     return bool(os.environ.get("SHOPIFY_ACCESS_TOKEN") and os.environ.get("SHOPIFY_SHOP"))
 
 
+def _shopify_setup_hint() -> str:
+    return (
+        "Shopify tools require SHOPIFY_ACCESS_TOKEN and SHOPIFY_SHOP env vars. "
+        "Run `python plugins/shopify/get_token.py` with your SHOPIFY_API_KEY and "
+        "SHOPIFY_API_SECRET to get the token, then add it to Railway env vars."
+    )
+
+
 def _client() -> ShopifyClient:
     return ShopifyClient()
 
