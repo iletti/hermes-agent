@@ -294,6 +294,14 @@ TOOLSETS = {
         ],
         "includes": []
     },
+    "shopify": {
+        "description": "Native Shopify store management — products, orders, customers, collections, and raw GraphQL",
+        "tools": [
+            "shopify_products", "shopify_orders", "shopify_customers",
+            "shopify_collections", "shopify_graphql",
+        ],
+        "includes": []
+    },
 
 
     # Scenario-specific toolsets

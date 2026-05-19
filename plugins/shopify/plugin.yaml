@@ -1,0 +1,11 @@
+name: shopify
+version: 1.0.0
+description: "Native Shopify integration — 5 tools (products, orders, customers, collections, graphql) using the Shopify Admin GraphQL API. Auth via SHOPIFY_ACCESS_TOKEN + SHOPIFY_SHOP env vars."
+author: NousResearch
+kind: backend
+provides_tools:
+  - shopify_products
+  - shopify_orders
+  - shopify_customers
+  - shopify_collections
+  - shopify_graphql
