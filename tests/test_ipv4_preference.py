@@ -112,3 +112,36 @@ class TestConfigDefault:
         from hermes_cli.config import DEFAULT_CONFIG
         assert "network" in DEFAULT_CONFIG
         assert DEFAULT_CONFIG["network"]["force_ipv4"] is False
+
+
+class TestShouldForceIPv4:
+    """Tests for should_force_ipv4() — env var + config.yaml resolution."""
+
+    def test_false_when_unset_everywhere(self, monkeypatch):
+        from hermes_constants import should_force_ipv4
+        monkeypatch.delenv("HERMES_FORCE_IPV4", raising=False)
+        assert should_force_ipv4(None) is False
+        assert should_force_ipv4({}) is False
+
+    def test_config_flag_honored_when_env_unset(self, monkeypatch):
+        from hermes_constants import should_force_ipv4
+        monkeypatch.delenv("HERMES_FORCE_IPV4", raising=False)
+        assert should_force_ipv4({"force_ipv4": True}) is True
+        assert should_force_ipv4({"force_ipv4": False}) is False
+
+    def test_env_truthy_enables_regardless_of_config(self, monkeypatch):
+        from hermes_constants import should_force_ipv4
+        for value in ("1", "true", "TRUE", "yes", "on"):
+            monkeypatch.setenv("HERMES_FORCE_IPV4", value)
+            assert should_force_ipv4({"force_ipv4": False}) is True
+
+    def test_env_falsy_overrides_config_true(self, monkeypatch):
+        from hermes_constants import should_force_ipv4
+        for value in ("0", "false", "no", "off"):
+            monkeypatch.setenv("HERMES_FORCE_IPV4", value)
+            assert should_force_ipv4({"force_ipv4": True}) is False
+
+    def test_empty_env_falls_back_to_config(self, monkeypatch):
+        from hermes_constants import should_force_ipv4
+        monkeypatch.setenv("HERMES_FORCE_IPV4", "")
+        assert should_force_ipv4({"force_ipv4": True}) is True

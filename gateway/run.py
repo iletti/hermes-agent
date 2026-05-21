@@ -582,10 +582,11 @@ if _config_path.exists():
         )
 
 # Apply IPv4 preference if configured (before any HTTP clients are created).
+# Enabled by config.yaml's network.force_ipv4 or the HERMES_FORCE_IPV4 env var.
 try:
-    from hermes_constants import apply_ipv4_preference
+    from hermes_constants import apply_ipv4_preference, should_force_ipv4
     _network_cfg = (_cfg if '_cfg' in dir() else {}).get("network", {})
-    if isinstance(_network_cfg, dict) and _network_cfg.get("force_ipv4"):
+    if should_force_ipv4(_network_cfg if isinstance(_network_cfg, dict) else {}):
         apply_ipv4_preference(force=True)
 except Exception as _bootstrap_exc:
     print(f"  Warning: IPv4 preference application failed: {_bootstrap_exc}", file=sys.stderr)

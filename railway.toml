@@ -17,6 +17,12 @@
 #   not follow.  Keep all credentials in Railway Variables (above) so a new
 #   empty Volume in the new region does not take the bot offline.
 #
+# Optional — networking:
+#   HERMES_FORCE_IPV4=1  — prefer IPv4 for all outbound connections. Set this
+#     if LLM calls fail with "Connection error" after a region change: many
+#     cloud regions have broken or partial IPv6 egress, and Python otherwise
+#     tries an unreachable AAAA record first and times out.
+#
 # Optional — enable the web dashboard alongside the gateway:
 #   HERMES_DASHBOARD=1              — start web UI in background
 #   HERMES_DASHBOARD_HOST=0.0.0.0  — bind dashboard to all interfaces

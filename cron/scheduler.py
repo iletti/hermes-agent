@@ -1304,11 +1304,12 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         except Exception as e:
             logger.warning("Job '%s': failed to load config.yaml, using defaults: %s", job_id, e)
 
-        # Apply IPv4 preference if configured.
+        # Apply IPv4 preference if configured (config.yaml network.force_ipv4
+        # or the HERMES_FORCE_IPV4 env var).
         try:
-            from hermes_constants import apply_ipv4_preference
+            from hermes_constants import apply_ipv4_preference, should_force_ipv4
             _net_cfg = _cfg.get("network", {})
-            if isinstance(_net_cfg, dict) and _net_cfg.get("force_ipv4"):
+            if should_force_ipv4(_net_cfg if isinstance(_net_cfg, dict) else {}):
                 apply_ipv4_preference(force=True)
         except Exception:
             pass
