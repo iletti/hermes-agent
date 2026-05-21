@@ -1,8 +1,27 @@
 # Railway deployment configuration for Hermes Agent
 # https://docs.railway.app/reference/config-as-code
 #
-# Required environment variables (set in Railway dashboard):
-#   OPENAI_API_KEY        — or ANTHROPIC_API_KEY / other provider key
+# Required environment variables — set these in the Railway dashboard under
+# the service's "Variables" tab.  Set them HERE, not via the in-app Hermes
+# web dashboard: the in-app dashboard writes credentials to the persistent
+# Volume (/opt/data/.env), and the Volume is region-locked — migrating the
+# service to another region leaves it behind, so those credentials are lost.
+# Railway Variables, by contrast, survive region migrations and redeploys.
+#
+#   DISCORD_BOT_TOKEN     — required for the Discord bot to come online
+#   ANTHROPIC_API_KEY     — or OPENAI_API_KEY / other LLM provider key
+#
+# Persistent storage:
+#   Attach a Railway Volume mounted at /opt/data (state.db, sessions, logs).
+#   Volumes do NOT move across regions — when changing region, the data does
+#   not follow.  Keep all credentials in Railway Variables (above) so a new
+#   empty Volume in the new region does not take the bot offline.
+#
+# Optional — networking:
+#   HERMES_FORCE_IPV4=1  — prefer IPv4 for all outbound connections. Set this
+#     if LLM calls fail with "Connection error" after a region change: many
+#     cloud regions have broken or partial IPv6 egress, and Python otherwise
+#     tries an unreachable AAAA record first and times out.
 #
 # Optional — enable the web dashboard alongside the gateway:
 #   HERMES_DASHBOARD=1              — start web UI in background

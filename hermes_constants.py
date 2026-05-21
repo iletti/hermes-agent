@@ -339,6 +339,28 @@ def apply_ipv4_preference(force: bool = False) -> None:
     socket.getaddrinfo = _ipv4_getaddrinfo  # type: ignore[assignment]
 
 
+def should_force_ipv4(network_cfg: "dict | None" = None) -> bool:
+    """Return True when IPv4-preferred DNS resolution should be applied.
+
+    Honors the ``HERMES_FORCE_IPV4`` environment variable so cloud hosts
+    (Railway, Fly.io, …) can toggle the workaround from their dashboard —
+    surviving region migrations and volume resets — without editing
+    ``config.yaml``.  This matters because broken or partial IPv6 egress is
+    a common cause of "Connection error" after moving a deployment between
+    regions, yet ``config.yaml`` lives on a region-locked volume.
+
+    The env var, when set, takes precedence (truthy -> on, anything else ->
+    off).  When unset, falls back to the ``network.force_ipv4`` setting from
+    ``config.yaml``.
+    """
+    env = os.environ.get("HERMES_FORCE_IPV4", "").strip().lower()
+    if env:
+        return env in {"1", "true", "yes", "on"}
+    if isinstance(network_cfg, dict):
+        return bool(network_cfg.get("force_ipv4"))
+    return False
+
+
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_MODELS_URL = f"{OPENROUTER_BASE_URL}/models"
 
